@@ -76,4 +76,3 @@ namespace dotnetapp.Controllers
         }
     }
 }
-https://github.com/Janani-iamneo/MobilePhone_Management_Swagger.git
