@@ -22,25 +22,25 @@ namespace dotnetapp.Tests
         }
 
         [Test]
-        public async Task GetAllStudents_ReturnsListOfStudents()
+        public async Task GetAllBookings_ReturnsListOfBookings()
         {
             // No need for explicit data creation
-            var response = await _httpClient.GetAsync("api/Student");
+            var response = await _httpClient.GetAsync("api/Booking");
             response.EnsureSuccessStatusCode();
 
             var content = await response.Content.ReadAsStringAsync();
-            var students = JsonConvert.DeserializeObject<Student[]>(content);
+            var bookings = JsonConvert.DeserializeObject<Booking[]>(content);
 
-            Assert.IsNotNull(students);
-            Assert.IsTrue(students.Length > 0);
+            Assert.IsNotNull(bookings);
+            Assert.IsTrue(bookings.Length > 0);
         }
 
        [Test]
-        public async Task GetStudentById_ReturnsStudent()
+        public async Task GetBookingById_ReturnsBooking()
         {
             // No need for explicit data creation
-            var studentId = 3;
-            var response = await _httpClient.GetAsync($"api/Student/{studentId}");
+            var bookingId = 3;
+            var response = await _httpClient.GetAsync($"api/Booking/{bookingId}");
 
             // Assert
             Assert.AreEqual(HttpStatusCode.OK, response.StatusCode);
@@ -48,117 +48,121 @@ namespace dotnetapp.Tests
             response.EnsureSuccessStatusCode();
 
             var content = await response.Content.ReadAsStringAsync();
-            var @student = JsonConvert.DeserializeObject<Student>(content);
+            var @booking = JsonConvert.DeserializeObject<Booking>(content);
 
-            Assert.IsNotNull(@student);
-            Assert.AreEqual(studentId, @student.StudentId);
+            Assert.IsNotNull(@booking);
+            Assert.AreEqual(bookingId, @booking.BookingId);
         }
 
 
         [Test]
-        public async Task GetStudentById_InvalidId_ReturnsNotFound()
+        public async Task GetBookingById_InvalidId_ReturnsNotFound()
         {
             // No need for explicit data creation
-            var studentId = 999;
-            var response = await _httpClient.GetAsync($"api/Student/{studentId}");
+            var bookingId = 999;
+            var response = await _httpClient.GetAsync($"api/Booking/{bookingId}");
 
             Assert.AreEqual(HttpStatusCode.NotFound, response.StatusCode);
         }
 
         [Test]
-        public async Task CreateStudent_ReturnsCreatedResponse()
+        public async Task CreateBooking_ReturnsCreatedResponse()
         {
-            var newStudent = new Student
+            var newBooking = new Booking
             {
-                Name = "New Student",
-                Age = 20,
-                Grade = "A"
+                CustomerName = "New Customer",
+                EventName = "New Event",
+                BookingDate = DateTime.Now.AddDays(30),
+                NumberOfTickets = 2
             };
 
-            var json = JsonConvert.SerializeObject(newStudent);
+            var json = JsonConvert.SerializeObject(newBooking);
             var content = new StringContent(json, Encoding.UTF8, "application/json");
 
-            var response = await _httpClient.PostAsync("api/Student", content);
+            var response = await _httpClient.PostAsync("api/Booking", content);
             response.EnsureSuccessStatusCode();
 
-            var createdStudent = JsonConvert.DeserializeObject<Student>(await response.Content.ReadAsStringAsync());
+            var createdBooking = JsonConvert.DeserializeObject<Booking>(await response.Content.ReadAsStringAsync());
 
-            Assert.IsNotNull(createdStudent);
-            Assert.AreEqual(newStudent.Name, createdStudent.Name);
+            Assert.IsNotNull(createdBooking);
+            Assert.AreEqual(newBooking.CustomerName, createdBooking.CustomerName);
         }
 
         [Test]
-        public async Task UpdateStudent_ValidId_ReturnsNoContent()
+        public async Task UpdateBooking_ValidId_ReturnsNoContent()
         {
             // Explicit data creation
-            var studentId = 2;
-            var newStudent = new Student
+            var bookingId = 2;
+            var newBooking = new Booking
             {
-                Name = "New Student",
-                Age = 20,
-                Grade = "A"
+                CustomerName = "New Customer",
+                EventName = "New Event",
+                BookingDate = DateTime.Now.AddDays(30),
+                NumberOfTickets = 2
             };
 
-            var json = JsonConvert.SerializeObject(newStudent);
+            var json = JsonConvert.SerializeObject(newBooking);
             var content = new StringContent(json, Encoding.UTF8, "application/json");
 
-            var response = await _httpClient.PutAsync($"api/Student/{studentId}", content);
+            var response = await _httpClient.PutAsync($"api/Booking/{bookingId}", content);
 
             Assert.AreEqual(HttpStatusCode.NoContent, response.StatusCode);
         }
 
         [Test]
-        public async Task UpdateStudent_InvalidId_ReturnsNotFound()
+        public async Task UpdateBooking_InvalidId_ReturnsNotFound()
         {
             // No need for explicit data creation
-            var studentId = 999;
-            var newStudent = new Student
+            var bookingId = 999;
+            var newBooking = new Booking
             {
-                Name = "New Student",
-                Age = 20,
-                Grade = "A"
+                CustomerName = "New Customer",
+                EventName = "New Event",
+                BookingDate = DateTime.Now.AddDays(30),
+                NumberOfTickets = 2
             };
 
-            var json = JsonConvert.SerializeObject(newStudent);
+            var json = JsonConvert.SerializeObject(newBooking);
             var content = new StringContent(json, Encoding.UTF8, "application/json");
 
-            var response = await _httpClient.PutAsync($"api/Student/{studentId}", content);
+            var response = await _httpClient.PutAsync($"api/Booking/{bookingId}", content);
 
             Assert.AreEqual(HttpStatusCode.NotFound, response.StatusCode);
         }
 
         [Test]
-        public async Task DeleteStudent_ValidId_ReturnsNoContent()
+        public async Task DeleteBooking_ValidId_ReturnsNoContent()
         {
             // Explicit data creation
-            var newStudent = new Student
+            var newBooking = new Booking
             {
-                Name = "New Student",
-                Age = 20,
-                Grade = "A"
+                CustomerName = "New Customer",
+                EventName = "New Event",
+                BookingDate = DateTime.Now.AddDays(30),
+                NumberOfTickets = 2
             };
 
-            var json = JsonConvert.SerializeObject(newStudent);
+            var json = JsonConvert.SerializeObject(newBooking);
             var content = new StringContent(json, Encoding.UTF8, "application/json");
 
-            var createResponse = await _httpClient.PostAsync("api/Student", content);
+            var createResponse = await _httpClient.PostAsync("api/Booking", content);
             createResponse.EnsureSuccessStatusCode();
 
-            var createdStudent = JsonConvert.DeserializeObject<Student>(await createResponse.Content.ReadAsStringAsync());
-            var studentId = createdStudent.StudentId;
+            var createdBooking = JsonConvert.DeserializeObject<Booking>(await createResponse.Content.ReadAsStringAsync());
+            var bookingId = createdBooking.BookingId;
 
-            var response = await _httpClient.DeleteAsync($"api/Student/{studentId}");
+            var response = await _httpClient.DeleteAsync($"api/Booking/{bookingId}");
 
             Assert.AreEqual(HttpStatusCode.NoContent, response.StatusCode);
         }
 
         [Test]
-        public async Task DeleteStudent_InvalidId_ReturnsNotFound()
+        public async Task DeleteBooking_InvalidId_ReturnsNotFound()
         {
             // No need for explicit data creation
-            var studentId = 999;
+            var bookingId = 999;
 
-            var response = await _httpClient.DeleteAsync($"api/Student/{studentId}");
+            var response = await _httpClient.DeleteAsync($"api/Booking/{bookingId}");
 
             Assert.AreEqual(HttpStatusCode.NotFound, response.StatusCode);
         }
